@@ -14,7 +14,6 @@ func main() {
 	for {
 		fmt.Print("Pokedex > ")
 		for inScanner.Scan() {
-
 			userInput := inScanner.Text()
 			userInput = strings.ToLower(userInput)
 			words := strings.Fields(userInput)
