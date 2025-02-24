@@ -46,7 +46,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*config) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -67,4 +67,10 @@ func getCommands() map[string]cliCommand {
 			callback:    commandMap,
 		},
 	}
+}
+
+type config struct {
+	Current  string
+	Next     string
+	Previous string
 }

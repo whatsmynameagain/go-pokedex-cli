@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func commandMap() error {
+func commandMap(conf *config) error {
 
 	locations := getLocations()
 	for _, location := range locations {
@@ -72,16 +72,13 @@ type Location struct {
 	} `json:"pokemon_encounters"`
 }
 
-// what's in the response 'results'
-type ResponseLocation struct {
-	name string `json:"name"`
-	url  string `json:"url"`
-}
-
 // response from GET
 type Response struct {
-	count    int                `json:"count"`
-	next     string             `json:"next"`
-	previous string             `json:"previous"`
-	results  []ResponseLocation `json:"results"`
+	Count    int    `json:"count"`
+	Next     string `json:"next"`
+	Previous string `json:"previous"`
+	Results  []struct {
+		Name string `json:"name"`
+		URL  string `json:"url"`
+	} `json:"results"`
 }
