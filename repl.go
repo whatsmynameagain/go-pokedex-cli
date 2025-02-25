@@ -10,15 +10,14 @@ import (
 )
 
 type Config struct {
-	pokeapiClient pokeapi.Client
+	pokeapiClient *pokeapi.Client
 	Next          *string
 	Previous      *string
 }
 
-func start() {
+func start(configuration *Config) {
 
 	inScanner := bufio.NewScanner(os.Stdin)
-	var configuration Config
 
 	for {
 		fmt.Print("Pokedex > ")
@@ -31,7 +30,7 @@ func start() {
 		commandName := words[0]
 
 		if command, exists := getCommands()[commandName]; exists {
-			err := command.callback(&configuration)
+			err := command.callback(configuration)
 			if err != nil {
 				fmt.Println(err)
 			}

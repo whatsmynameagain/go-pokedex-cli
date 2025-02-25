@@ -35,6 +35,8 @@ func commandMap(conf *Config, forward bool) error {
 		}
 	}
 
+	// cache checking stuff goes here (to-do)
+
 	locationsResp, err := conf.pokeapiClient.GetLocationsList(getURL)
 	if err != nil {
 		fmt.Println("Response error: ")
@@ -42,6 +44,8 @@ func commandMap(conf *Config, forward bool) error {
 		fmt.Println("Try again?")
 		return fmt.Errorf("response error: \n%v\ntry again?", err)
 	}
+
+	//cache updating goes here
 
 	conf.Next = locationsResp.Next
 	conf.Previous = locationsResp.Previous

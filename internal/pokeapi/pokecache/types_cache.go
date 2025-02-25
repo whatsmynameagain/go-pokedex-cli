@@ -32,6 +32,11 @@ func (c *Cache) Get(key string) ([]byte, bool) {
 // untested
 func (c *Cache) reapLoop() {
 	fmt.Println("Executing reapLoop()...")
+	if len(c.entries) == 0 {
+		fmt.Println("Cache is empty, skipping...")
+		return
+	}
+
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	for key, entry := range c.entries {

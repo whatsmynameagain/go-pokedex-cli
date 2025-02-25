@@ -9,7 +9,7 @@ import (
 
 //get locations list
 
-func (c Client) GetLocationsList(getURL string) (ResponseLocations, error) {
+func (c *Client) GetLocationsList(getURL string) (ResponseLocations, error) {
 
 	res, err := http.Get(getURL)
 	if err != nil {
