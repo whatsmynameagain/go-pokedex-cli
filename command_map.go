@@ -7,9 +7,35 @@ import (
 	"net/http"
 )
 
-func commandMap(conf *Config) error {
+func commandMapA(conf *Config) error {
+	return commandMap(conf, true)
+}
 
-	locations, err := getLocationsList(conf)
+func commandMapB(conf *Config) error {
+	return commandMap(conf, false)
+}
+
+func commandMap(conf *Config, forward bool) error {
+
+	var getURL string
+	// if moving forwards or backwards, check if Next or Previous are empty
+	// if so, use the default
+	switch forward {
+	case true:
+		if conf.Next == "" {
+			getURL = "https://pokeapi.co/api/v2/location-area/"
+		} else {
+			getURL = conf.Next
+		}
+	case false:
+		if conf.Previous == "" {
+			getURL = "https://pokeapi.co/api/v2/location-area/"
+		} else {
+			getURL = conf.Previous
+		}
+	}
+
+	locations, err := getLocationsList(conf, getURL)
 	if err != nil {
 		fmt.Println("Response error: ")
 		fmt.Printf("%v\n", err)
@@ -23,15 +49,7 @@ func commandMap(conf *Config) error {
 	return nil
 }
 
-func getLocationsList(conf *Config) ([]string, error) {
-
-	// use the base url if there's no Next
-	var getURL string
-	if conf.Next == "" {
-		getURL = "https://pokeapi.co/api/v2/location-area/"
-	} else {
-		getURL = conf.Next
-	}
+func getLocationsList(conf *Config, getURL string) ([]string, error) {
 
 	res, err := http.Get(getURL)
 	if err != nil {
