@@ -1,20 +1,73 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+)
 
-func commandMap(conf *config) error {
+func commandMap(conf *Config) error {
 
-	locations := getLocations()
+	locations, err := getLocationsList(conf)
+	if err != nil {
+		fmt.Println("Response error: ")
+		fmt.Printf("%v\n", err)
+		fmt.Println("Try again?")
+		return fmt.Errorf("Response error: \n%v\nTry again?", err)
+	}
 	for _, location := range locations {
-		fmt.Printf("%s\n", location)
+		fmt.Printf("%v\n", location)
 	}
 
 	return nil
 }
 
-func getLocations() []Location {
+func getLocationsList(conf *Config) ([]string, error) {
 
-	return []Location{}
+	// use the base url if there's no Next
+	var getURL string
+	if conf.Next == "" {
+		getURL = "https://pokeapi.co/api/v2/location-area/"
+	} else {
+		getURL = conf.Next
+	}
+
+	res, err := http.Get(getURL)
+	if err != nil {
+		return []string{}, err
+	}
+	defer res.Body.Close()
+	body, err := io.ReadAll(res.Body)
+
+	// not sure if this is needed, copied it from
+	// https://pkg.go.dev/net/http#example-Get
+	// will remove if redundant
+	if res.StatusCode > 299 {
+		return []string{}, fmt.Errorf("Response failed with status code: %d and\nbody: %s", res.StatusCode, body)
+	}
+
+	if err != nil {
+		return []string{}, err
+	}
+
+	//fmt.Println(string(body))
+
+	var uResponse Response
+
+	if err := json.Unmarshal(body, &uResponse); err != nil {
+		return []string{}, err
+	}
+
+	var out []string
+	for _, result := range uResponse.Results {
+		out = append(out, result.Name)
+	}
+
+	// update config
+	conf.Next = uResponse.Next
+	conf.Previous = uResponse.Previous
+	return out, nil
 }
 
 // actual locations

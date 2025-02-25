@@ -10,6 +10,7 @@ import (
 func start() {
 
 	inScanner := bufio.NewScanner(os.Stdin)
+	var configuration Config
 
 	for {
 		fmt.Print("Pokedex > ")
@@ -22,7 +23,7 @@ func start() {
 		commandName := words[0]
 
 		if command, exists := getCommands()[commandName]; exists {
-			err := command.callback()
+			err := command.callback(&configuration)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -46,7 +47,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(*Config) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -69,8 +70,7 @@ func getCommands() map[string]cliCommand {
 	}
 }
 
-type config struct {
-	Current  string
+type Config struct {
 	Next     string
 	Previous string
 }
