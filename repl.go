@@ -5,7 +5,15 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/whatsmynameagain/go-pokedex-cli/internal/pokeapi"
 )
+
+type Config struct {
+	pokeapiClient pokeapi.Client
+	Next          *string
+	Previous      *string
+}
 
 func start() {
 
@@ -35,6 +43,8 @@ func start() {
 	}
 }
 
+// trim white spaces and separate words, convert to lowercase
+// returns array of words
 func cleanInput(text string) []string {
 	words := strings.Fields(text)
 
@@ -65,7 +75,7 @@ func getCommands() map[string]cliCommand {
 		"map": {
 			name:        "map",
 			description: "Display next 20 locations",
-			callback:    commandMapA,
+			callback:    commandMapF,
 		},
 		"mapb": {
 			name:        "mapb",
@@ -73,9 +83,4 @@ func getCommands() map[string]cliCommand {
 			callback:    commandMapB,
 		},
 	}
-}
-
-type Config struct {
-	Next     string
-	Previous string
 }
