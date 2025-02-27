@@ -1,7 +1,6 @@
 package pokecache
 
 import (
-	"fmt"
 	"sync"
 	"time"
 )
@@ -30,22 +29,31 @@ func (c *Cache) Get(key string) ([]byte, bool) {
 }
 
 // untested
-func (c *Cache) reapLoop() {
-	fmt.Println("Executing reapLoop()...")
-	if len(c.entries) == 0 {
-		fmt.Println("Cache is empty, skipping...")
-		return
-	}
+func (c *Cache) reapLoop(interval time.Duration) {
 
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	for key, entry := range c.entries {
-		currentTime := time.Now()
-		// if the difference between the current time and the entry's time
-		// is greater than the cache's specified lifetime, delete it
-		if diff := currentTime.Sub(entry.createdAt); diff > c.lifetime {
-			delete(c.entries, key)
+	reapTimer := time.NewTicker(interval)
+	defer reapTimer.Stop()
+
+	for {
+		<-reapTimer.C
+		//fmt.Println("Executing reapLoop()...")
+		if len(c.entries) == 0 {
+			//fmt.Println("Cache is empty, skipping...")
+			return
 		}
+
+		c.mu.Lock()
+		currentTime := time.Now()
+		for key, entry := range c.entries {
+			// if the difference between the current time and the entry's time
+			// is greater than the cache's specified lifetime, delete it
+			//fmt.Println("reapLoop: checking cache entries...")
+			if currentTime.Sub(entry.createdAt) > c.lifetime {
+				//fmt.Printf("reapLoop: deleting key\n")
+				delete(c.entries, key)
+			}
+		}
+		c.mu.Unlock()
 	}
 }
 
@@ -56,18 +64,11 @@ type cacheEntry struct {
 
 func NewCache(interval time.Duration) *Cache {
 	newCache := Cache{
-		entries: make(map[string]cacheEntry),
-		// no need to touch the mutex field
-		// defer unlock
+		entries:  make(map[string]cacheEntry),
 		lifetime: interval,
 	}
-	reapTimer := time.NewTicker(interval)
-	defer reapTimer.Stop()
-	go func() {
-		for {
-			<-reapTimer.C
-			newCache.reapLoop()
-		}
-	}()
+
+	go newCache.reapLoop(interval)
 	return &newCache
+
 }
