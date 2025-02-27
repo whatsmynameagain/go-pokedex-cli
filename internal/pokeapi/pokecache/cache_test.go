@@ -1,51 +1,10 @@
-package main
+package pokecache
 
 import (
 	"fmt"
 	"testing"
 	"time"
-
-	"github.com/whatsmynameagain/go-pokedex-cli/internal/pokeapi/pokecache"
 )
-
-func TestCleanInput(t *testing.T) {
-
-	cases := []struct {
-		input    string
-		expected []string
-	}{
-		{
-			input:    "  hello  world  ",
-			expected: []string{"hello", "world"},
-		},
-		{
-			input:    "   hello   w orld   ",
-			expected: []string{"hello", "w", "orld"},
-		},
-
-		{
-			input:    "Hello World",
-			expected: []string{"hello", "world"},
-		},
-	}
-
-	for _, c := range cases {
-		actual := cleanInput(c.input)
-		if len(actual) != len(c.expected) {
-			t.Errorf("%d does not match array length %d", len(actual), len(c.expected))
-			//this fails the test automatically
-		}
-		for i := range actual {
-			word := actual[i]
-			expectedWord := c.expected[i]
-
-			if word != expectedWord {
-				t.Errorf("%s does not match %s", word, expectedWord)
-			}
-		}
-
-	}
-}
 
 func TestAddGet(t *testing.T) {
 	const interval = 5 * time.Second
@@ -65,7 +24,7 @@ func TestAddGet(t *testing.T) {
 
 	for i, c := range cases {
 		t.Run(fmt.Sprintf("Test case %v", i), func(t *testing.T) {
-			cache := pokecache.NewCache(interval)
+			cache := NewCache(interval)
 			cache.Add(c.key, c.val)
 			val, ok := cache.Get(c.key)
 			if !ok {
@@ -83,7 +42,7 @@ func TestAddGet(t *testing.T) {
 func TestReapLoop(t *testing.T) {
 	const baseTime = 5 * time.Millisecond
 	const waitTime = baseTime + 5*time.Millisecond
-	cache := pokecache.NewCache(baseTime)
+	cache := NewCache(baseTime)
 	cache.Add("https://example.com", []byte("testdata"))
 
 	_, ok := cache.Get("https://example.com")
