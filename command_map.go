@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/whatsmynameagain/go-pokedex-cli/internal/pokeapi"
 )
 
 func commandMapF(conf *Config) error {
@@ -23,19 +25,17 @@ func commandMap(conf *Config, forward bool) error {
 	switch forward {
 	case true:
 		if conf.Next == nil {
-			getURL = "https://pokeapi.co/api/v2/location-area/"
+			getURL = pokeapi.BaseURL + "/location-area/"
 		} else {
 			getURL = *conf.Next
 		}
 	case false:
 		if conf.Previous == nil {
-			getURL = "https://pokeapi.co/api/v2/location-area/"
+			getURL = pokeapi.BaseURL + "/location-area/"
 		} else {
 			getURL = *conf.Previous
 		}
 	}
-
-	// cache checking stuff goes here (to-do)
 
 	locationsResp, err := conf.pokeapiClient.GetLocationsList(getURL)
 	if err != nil {
@@ -44,8 +44,6 @@ func commandMap(conf *Config, forward bool) error {
 		fmt.Println("Try again?")
 		return fmt.Errorf("response error: \n%v\ntry again?", err)
 	}
-
-	//cache updating goes here
 
 	conf.Next = locationsResp.Next
 	conf.Previous = locationsResp.Previous
