@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/whatsmynameagain/go-pokedex-cli/internal/pokeapi"
+	"github.com/whatsmynameagain/go-pokedex-cli/src/internal/pokeapi"
 )
 
 type Config struct {

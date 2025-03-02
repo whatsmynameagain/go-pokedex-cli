@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/whatsmynameagain/go-pokedex-cli/internal/pokeapi"
+	"github.com/whatsmynameagain/go-pokedex-cli/src/internal/pokeapi"
 )
 
 func commandCatch(conf *Config, args ...string) error {

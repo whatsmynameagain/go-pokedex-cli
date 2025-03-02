@@ -3,21 +3,21 @@ package main
 import (
 	"fmt"
 
-	"github.com/whatsmynameagain/go-pokedex-cli/internal/pokeapi"
+	"github.com/whatsmynameagain/go-pokedex-cli/src/internal/pokeapi"
 )
 
 func commandMapF(conf *Config, args ...string) error {
-	return commandMap(conf, true, args)
+	return commandMap(conf, true)
 }
 
 func commandMapB(conf *Config, args ...string) error {
 	if conf.Previous == nil {
 		return fmt.Errorf("you're on the first page")
 	}
-	return commandMap(conf, false, args)
+	return commandMap(conf, false)
 }
 
-func commandMap(conf *Config, forward bool, args []string) error {
+func commandMap(conf *Config, forward bool) error {
 
 	var getURL string
 	endPoint := "/location-area"

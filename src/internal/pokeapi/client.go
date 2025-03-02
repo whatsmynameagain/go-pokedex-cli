@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/whatsmynameagain/go-pokedex-cli/internal/pokeapi/pokecache"
+	"github.com/whatsmynameagain/go-pokedex-cli/src/internal/pokeapi/pokecache"
 )
 
 type Client struct {
