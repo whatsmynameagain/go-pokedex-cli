@@ -59,6 +59,23 @@ func (c *Client) GetLocationPokemon(getURL string) (Location, error) {
 	return uResponse, nil
 }
 
+func (c *Client) GetPokemon(getURL string) (Pokemon, error) {
+
+	body, err := c.getPokeAPIData(getURL)
+
+	if err != nil {
+		return Pokemon{}, err
+	}
+
+	uResponse := Pokemon{}
+
+	if err := json.Unmarshal(body, &uResponse); err != nil {
+		return Pokemon{}, err
+	}
+
+	return uResponse, nil
+}
+
 // returns the body of the request after checking the cache
 func (c *Client) getPokeAPIData(getURL string) ([]byte, error) {
 
