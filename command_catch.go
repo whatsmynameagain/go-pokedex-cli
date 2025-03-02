@@ -18,6 +18,7 @@ func commandCatch(conf *Config, args ...string) error {
 	toCatch := args[1]
 
 	if _, ok := conf.caughtPokemon[toCatch]; ok {
+		// to-do: automate the 'a/an'
 		return fmt.Errorf("already caught a(n) %s", toCatch)
 	}
 
@@ -46,6 +47,7 @@ func commandCatch(conf *Config, args ...string) error {
 		fmt.Printf("%s was caught!\n", toCatch)
 		// add to caught list
 		conf.caughtPokemon[toCatch] = pokemonInfo
+		fmt.Println("You may now inspect it with the inspect command")
 	} else {
 		fmt.Printf("%s escaped!\n", toCatch)
 	}
