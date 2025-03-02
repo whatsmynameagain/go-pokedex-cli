@@ -2,7 +2,6 @@ package pokeapi
 
 // actual locations
 // generated with JSON-to-GO
-// don't know if this will be required by the project yet
 type Location struct {
 	ID                   int    `json:"id"`
 	Name                 string `json:"name"`

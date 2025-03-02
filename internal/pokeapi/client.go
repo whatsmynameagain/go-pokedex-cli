@@ -2,6 +2,7 @@ package pokeapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -41,6 +42,23 @@ func (c *Client) GetLocationsList(getURL string) (ResponseLocations, error) {
 	return uResponse, nil
 }
 
+func (c *Client) GetLocationPokemon(getURL string) (Location, error) {
+
+	body, err := c.getPokeAPIData(getURL)
+
+	if err != nil {
+		return Location{}, err
+	}
+
+	uResponse := Location{}
+
+	if err := json.Unmarshal(body, &uResponse); err != nil {
+		return Location{}, err
+	}
+
+	return uResponse, nil
+}
+
 // returns the body of the request after checking the cache
 func (c *Client) getPokeAPIData(getURL string) ([]byte, error) {
 
@@ -56,6 +74,10 @@ func (c *Client) getPokeAPIData(getURL string) ([]byte, error) {
 	}
 	defer res.Body.Close()
 	body, err := io.ReadAll(res.Body)
+
+	if string(body) == "Not Found" {
+		return []byte{}, fmt.Errorf("not found")
+	}
 
 	if err != nil {
 		return []byte{}, err

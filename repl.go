@@ -30,7 +30,7 @@ func start(configuration *Config) {
 		commandName := words[0]
 
 		if command, exists := getCommands()[commandName]; exists {
-			err := command.callback(configuration)
+			err := command.callback(configuration, words...)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -56,7 +56,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*Config) error
+	callback    func(*Config, ...string) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -80,6 +80,11 @@ func getCommands() map[string]cliCommand {
 			name:        "mapb",
 			description: "Display previous 20 locations",
 			callback:    commandMapB,
+		},
+		"explore": {
+			name:        "explore",
+			description: "Explore the selected location",
+			callback:    commandExplore,
 		},
 	}
 }

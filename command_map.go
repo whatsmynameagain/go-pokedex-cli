@@ -6,32 +6,33 @@ import (
 	"github.com/whatsmynameagain/go-pokedex-cli/internal/pokeapi"
 )
 
-func commandMapF(conf *Config) error {
-	return commandMap(conf, true)
+func commandMapF(conf *Config, args ...string) error {
+	return commandMap(conf, true, args)
 }
 
-func commandMapB(conf *Config) error {
+func commandMapB(conf *Config, args ...string) error {
 	if conf.Previous == nil {
 		return fmt.Errorf("you're on the first page")
 	}
-	return commandMap(conf, false)
+	return commandMap(conf, false, args)
 }
 
-func commandMap(conf *Config, forward bool) error {
+func commandMap(conf *Config, forward bool, args []string) error {
 
 	var getURL string
+	endPoint := "/location-area"
 	// if moving forwards or backwards, check if Next or Previous are empty
 	// if so, use the default
 	switch forward {
 	case true:
 		if conf.Next == nil {
-			getURL = pokeapi.BaseURL + "/location-area/"
+			getURL = pokeapi.BaseURL + endPoint
 		} else {
 			getURL = *conf.Next
 		}
 	case false:
 		if conf.Previous == nil {
-			getURL = pokeapi.BaseURL + "/location-area/"
+			getURL = pokeapi.BaseURL + endPoint
 		} else {
 			getURL = *conf.Previous
 		}
